@@ -35,9 +35,9 @@ $$
 | **$C$** | `Ciphertext` | The message body encrypted with the session key $K_s$. |
 | **$E_K$** | `EncryptedKey` | $K_s$ encrypted with the recipient's public key, $E(\text{Pub}_{\text{Recipient}}, K_s)$. |
 | **Sig** | `Signature` | Digital signature over the content hash and chain linkage. |
-| **parent\_sig\_id** | `HashID` | A reference to the **Sig** of the immediately preceding Message Envelope in the chain. Null for the originating envelope. |
-| **root\_fp** | `Fingerprint` | The Public Key Fingerprint of the original creator (Source of Provenance). |
-| **endorsements**[] | `List<I>` | An optional array of Endorsement Objects ($\mathcal{I}$) from third-party keys. |
+| **`parent_sig_id`** | `HashID` | Reference to the **Sig** of the preceding Message Envelope in the chain. Null for the originating envelope. |
+| **`root_fp`** | `Fingerprint` | Public Key Fingerprint of the original creator (Source of Provenance). |
+| **`endorsements`[]** | `List<I>` | Optional array of Endorsement Objects ($\mathcal{I}$) from third-party keys. |
 
 ---
 
@@ -51,8 +51,8 @@ $$
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| **issuer\_fp** | `Fingerprint` | The Public Key Fingerprint of the endorser. |
-| **endorse\_sig** | `Signature` | Signature by $\text{Priv}_{\text{Issuer}}$ over $\text{Hash}(M)$. |
+| **`issuer_fp`** | `Fingerprint` | Public Key Fingerprint of the endorser. |
+| **`endorse_sig`** | `Signature` | Signature by $\text{Priv}_{\text{Issuer}}$ over $\text{Hash}(M)$. |
 
 ---
 
@@ -66,9 +66,9 @@ $$
 
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| **fingerprint** | `Fingerprint` | Unique Public Key Identifier. |
-| **reputation\_score** | `Integer/Float` | The cumulative credibility score, beginning at a default value (e.g., 100). |
-| **action\_log** | `List<Event>` | A history of transactions affecting the score (Endorsements, Penalties). |
+| **`fingerprint`** | `Fingerprint` | Unique Public Key Identifier. |
+| **`reputation_score`** | `Integer/Float` | The cumulative credibility score, starting from a default (e.g., 100). |
+| **`action_log`** | `List<Event>` | History of transactions affecting the score (Endorsements, Penalties). |
 
 ---
 
@@ -77,16 +77,16 @@ $$
 ### 3.1 Initial Message Creation (Alice)
 
 1. **Key Generation:** Alice generates a random symmetric session key $K_s$.  
-2. **Encryption (Content):**  
+2. **Encryption (Content):**
    $$
    C = E(K_s, M)
    $$
-3. **Encryption (Key):**  
+3. **Encryption (Key):**
    $$
    E_K = E(\text{Pub}_{\text{Bob}}, K_s)
    $$
 4. **Provenance:** Alice defines the content hash $h = \text{Hash}(M)$ and sets $\text{root\_fp} = \text{Fingerprint}(\text{Pub}_{\text{Alice}})$.  
-5. **Signature/Chain Link:**  
+5. **Signature/Chain Link:**
    $$
    \text{Sig} = \text{Sign}(\text{Priv}_{\text{Alice}}, h \ \| \ \text{null} \ \| \ \text{root\_fp})
    $$
@@ -110,7 +110,7 @@ When Bob shares the *original, unmodified* content:
    \text{Sig}_{\text{Bob}} = \text{Sign}(\text{Priv}_{\text{Bob}}, h \ \| \ \text{parent\_sig\_id} \ \| \ \text{root\_fp})
    $$
 5. **Transmission:** Bob sends the new Envelope $\mathcal{E}'$ to Charlie.  
-   *Note: The content hash ($h$) and $\text{root\_fp}$ remain identical.*
+   *Note: $h$ and $\text{root\_fp}$ remain identical.*
 
 ---
 
@@ -126,20 +126,20 @@ When Bob shares *modified* content $M'$:
    $\text{parent\_sig\_id} = \text{Sig}_{\text{Alice}}$  
 3. **New Signature (Fork):**  
    $$
-   \text{Sig}_{\text{Bob}}' = \text{Sign}(\text{Priv}_{\text{Bob}}, h' \ \| \ \text{parent\_sig\_id} \ \| \ \text{root\_fp})
+   \text{Sig}'_{\text{Bob}} = \text{Sign}(\text{Priv}_{\text{Bob}}, h' \ \| \ \text{parent\_sig\_id} \ \| \ \text{root\_fp})
    $$
-   *Note: The $\text{root\_fp}$ remains linked to Alice, but the content hash ($h'$) changes.*
+   *Note: $\text{root\_fp}$ remains linked to Alice, but $h'$ changes.*
 
 ---
 
 ### 3.4 Endorsement (Third Party $X$)
 
-1. **Verification:** Issuer $X$ verifies the message $M$ and its chain up to $\text{root\_fp}$.  
+1. **Verification:** $X$ verifies $M$ and its chain up to $\text{root\_fp}$.  
 2. **Assertion:**  
    $$
    \text{endorse\_sig} = \text{Sign}(\text{Priv}_X, \text{Hash}(M))
    $$
-3. **Inclusion:** $X$ attaches $\mathcal{I}$ to the message envelope’s $\text{endorsements}[]$ array.  
+3. **Inclusion:** $X$ attaches $\mathcal{I}$ to $\mathcal{E}$’s `endorsements[]`.  
 4. **Reputation Update (Positive):**  
    $$
    \mathcal{L}_{\text{fp}_X}.\text{reputation\_score} \leftarrow \mathcal{L}_{\text{fp}_X}.\text{reputation\_score} + \Delta_{\text{Endorse}}
@@ -152,17 +152,16 @@ When Bob shares *modified* content $M'$:
 ### 4.1 Chain Verification
 
 Recipients verify $\mathcal{E}$ recursively by checking:  
-1. **Content Integrity:** $\text{Sig}$ is valid for the hash $h$.  
-2. **Chain Integrity:** $\text{parent\_sig\_id}$ refers to a valid previous signature linking back to $\text{root\_fp}$.
+1. **Content Integrity:** $\text{Sig}$ is valid for hash $h$.  
+2. **Chain Integrity:** $\text{parent\_sig\_id}$ refers to a valid previous signature linking to $\text{root\_fp}$.
 
 ---
 
 ### 4.2 Penalty Enforcement (Fake Content / Misinformation)
 
-If a message $M$ is verified as **FALSE** or malicious:
+If $M$ is verified as **FALSE** or malicious:
 
-1. **Lineage Trace:** Identify all keys that:  
-   - **Signed** or **endorsed** the malicious or derivative messages.  
+1. **Lineage Trace:** Identify all keys that **signed** or **endorsed** malicious or derivative messages.  
 2. **Penalty Application:**  
    $$
    \mathcal{L}_{\text{fp}}.\text{reputation\_score} \leftarrow \mathcal{L}_{\text{fp}}.\text{reputation\_score} - \Delta_{\text{Penalty}}
@@ -179,7 +178,7 @@ $$
 \text{Trust\_Weight}(\text{Sig}) = f(\mathcal{L}_{\text{Signer\_fp}}.\text{reputation\_score})
 $$
 
-If the reputation falls below a threshold, the system flags signatures as **Low-Trust**, **Ignored**, or **Extreme Caution**.
+If a key’s score falls below a threshold, its signatures are flagged as **Low-Trust**, **Ignored**, or **Extreme Caution**.
 
 ---
 
