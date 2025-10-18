@@ -1,3 +1,6 @@
+# Principal Developer: David Buitrago Arenas (dabuiar@gmail.com)
+# This module defines the core data structures for the ReputationChain protocol.
+
 class EndorsementObject:
     """
     Represents a third-party affirmation (I) of a message's content.

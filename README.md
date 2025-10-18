@@ -1,6 +1,8 @@
 # solid-couscous
 Protocol : Reputation-Aware Web of Trust for Encrypted Content
 
+**Principal Developer:** David Buitrago Arenas (dabuiar@gmail.com)
+
 # ReputationChain Protocol Specification (Draft v1.0)
 
 **Title:** A Reputation-Aware Web of Trust Protocol for Encrypted Content Lineage
@@ -139,7 +141,7 @@ If a key's score falls below a predefined threshold, its signatures and endorsem
 
 MIT License
 
-Copyright (c) 2025
+Copyright (c) 2025 David Buitrago Arenas
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

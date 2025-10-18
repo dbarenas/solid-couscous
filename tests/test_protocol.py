@@ -1,3 +1,6 @@
+# Principal Developer: David Buitrago Arenas (dabuiar@gmail.com)
+# This module contains unit tests for the ReputationChain protocol.
+
 import unittest
 import json
 from reputation_chain.crypto import SimulatedCryptoProvider

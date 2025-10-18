@@ -1,3 +1,6 @@
+# Principal Developer: David Buitrago Arenas (dabuiar@gmail.com)
+# This module implements the core protocol operations.
+
 from .core import MessageEnvelope, EndorsementObject
 
 def create_initial_message(content, sender, recipient, crypto_provider):

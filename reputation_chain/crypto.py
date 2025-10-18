@@ -1,3 +1,6 @@
+# Principal Developer: David Buitrago Arenas (dabuiar@gmail.com)
+# This module provides a simulated cryptographic provider for the protocol.
+
 import hashlib
 import json
 

@@ -1,3 +1,6 @@
+# Principal Developer: David Buitrago Arenas (dabuiar@gmail.com)
+# This module orchestrates the ReputationChain protocol simulation.
+
 import json
 from reputation_chain.crypto import SimulatedCryptoProvider
 from reputation_chain.ledger import ReputationLedger
