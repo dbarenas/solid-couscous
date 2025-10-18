@@ -1,3 +1,6 @@
+# Principal Developer: David Buitrago Arenas (dabuiar@gmail.com)
+# This module defines the Actor entity for the simulation.
+
 class Actor:
     """
     Represents a participant in the ReputationChain network.

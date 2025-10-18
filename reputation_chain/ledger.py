@@ -1,3 +1,6 @@
+# Principal Developer: David Buitrago Arenas (dabuiar@gmail.com)
+# This module defines the ReputationLedger for tracking trust scores.
+
 import time
 
 class ReputationLedger:
